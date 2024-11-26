@@ -1,4 +1,18 @@
-const { PrismaClient } = require("@prisma/client");
+import { PrismaClient } from "@prisma/client";
+
+// Instantiate PrismaClient
 const prisma = new PrismaClient();
-//export default prisma;
-module.exports = prisma;
+
+// Gracefully handle process exit
+process.on("SIGINT", async () => {
+  await prisma.$disconnect();
+  process.exit(0);
+});
+
+process.on("SIGTERM", async () => {
+  await prisma.$disconnect();
+  process.exit(0);
+});
+
+// Export the Prisma instance
+export default prisma;
