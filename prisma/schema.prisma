@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int      @id @default(autoincrement()) // Primary key with auto-increment
+  email    String   @unique // Email must be unique
+  password String
+  name     String
+  library  Library? @relation // Optional relation to Library
+
+  // One-to-many relation with Book model
+  books Book[] @relation("UserBooks") // This defines the opposite side of the relation
+}
+
+model Book {
+  id          Int     @id @default(autoincrement()) // Primary key with auto-increment
+  title       String
+  author      String
+  description String? // Optional field for description
+  pages       Int? // Optional field for number of pages
+  image       String  @default("") // Default empty string for image
+
+  createdBy   User @relation("UserBooks", fields: [createdById], references: [id]) // Relation to User model
+  createdById Int // Foreign key to User model
+
+  createdAt DateTime @default(now()) // Timestamp for when the book is created
+
+  // Relation to Library model (if needed)
+  library   Library? @relation("LibraryBooks", fields: [libraryId], references: [id]) // Relation to Library model
+  libraryId Int? // Foreign key to Library model, optional if not needed
+}
+
+model Library {
+  id          Int    @id @default(autoincrement()) // Primary key with auto-increment
+  name        String @unique // Library name should be unique
+  createdBy   User   @relation(fields: [createdById], references: [id]) // Relation to User model
+  createdById Int    @unique // Foreign key to User model, must be unique for one-to-one relation
+
+  books     Book[]   @relation("LibraryBooks") // One-to-many relation with Book model
+  createdAt DateTime @default(now()) // Timestamp for when the library is created
+}
