@@ -5,6 +5,8 @@ const cors = require("cors");
 import bodyParser from "body-parser";
 
 const authRouter = require("./routes/auth.routes");
+const bookRouter = require("./routes/book.routes");
+
 const app = express();
 
 const port = process.env.PORT || 3000;
@@ -19,6 +21,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/", authRouter);
+app.use("/", bookRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
