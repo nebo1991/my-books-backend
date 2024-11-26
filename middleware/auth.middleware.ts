@@ -1,12 +1,14 @@
+// auth.middleware.ts
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 
+// Extend the Request interface to include `user`
 export interface AuthenticatedRequest extends Request {
-  user?: string | jwt.JwtPayload;
+  user?: string | jwt.JwtPayload; // This could be your JWT payload or the user object
 }
 
 const authMiddleware = async (
-  req: AuthenticatedRequest,
+  req: AuthenticatedRequest, // Use the extended Request type here
   res: Response,
   next: NextFunction
 ): Promise<void> => {
