@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 
 const authRouter = require("./routes/auth.routes");
 const bookRouter = require("./routes/book.routes");
+const libraryRouter = require("./routes/library.routes");
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.get("/", (req, res) => {
 
 app.use("/", authRouter);
 app.use("/", bookRouter);
+app.use("/", libraryRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
