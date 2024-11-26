@@ -112,6 +112,43 @@ authRouter.get("/verify", authMiddleware, (req, res: Response, next) => {
   }
 });
 
+authRouter.get(
+  "/user",
+  authMiddleware,
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userPayload = (req as any).user; // Cast req as any to access custom fields
+      if (
+        !userPayload ||
+        typeof userPayload !== "object" ||
+        !("id" in userPayload)
+      ) {
+        res.status(401).json({ message: "Unauthorized access." }); // Call res, don't return it
+        return; // Make sure to return after sending the response
+      }
+
+      const user = await prisma.user.findUnique({
+        where: { id: userPayload.id },
+        include: {
+          library: true, // Include the user's library data
+          books: true, // Optionally include books if needed
+        },
+      });
+
+      if (!user) {
+        res.status(404).json({ message: "User not found." }); // Call res, don't return it
+        return; // Make sure to return after sending the response
+      }
+
+      // Send the response but don't return it
+      res.status(200).json(user);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      next(error); // Pass error to the next middleware
+    }
+  }
+);
+
 authRouter;
 
 module.exports = authRouter;
