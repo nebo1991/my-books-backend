@@ -15,7 +15,6 @@ libraryRouter.post(
   authMiddleware,
   async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     try {
-      // Safely extract user ID from req.user
       const userId =
         typeof req.user === "object" && "id" in req.user
           ? (req.user as { id: number }).id
@@ -44,23 +43,15 @@ libraryRouter.post(
           books: {
             connect: (req.body.books || []).map((bookId: number) => ({
               id: bookId,
-            })), // Connect books to the library
+            })),
           },
         },
       });
 
       console.log("New Library Created:", newLibrary);
 
-      // Update the user to reference the new library
-      const updatedUser = await prisma.user.update({
-        where: { id: userId },
-        data: { id: newLibrary.id },
-        include: { library: true }, // Include the library data in the response
-      });
-
-      console.log("Updated User:", updatedUser);
-
-      res.status(201).json(updatedUser);
+      // Return the newly created library
+      res.status(201).json(newLibrary);
     } catch (error: unknown) {
       console.error("Error creating library:", error);
 
@@ -108,49 +99,27 @@ libraryRouter.get(
 );
 
 libraryRouter.get(
-  "/libraries/:id",
+  "/libraries/:libraryId",
   authMiddleware,
   async (req: AuthenticatedRequest, res: Response): Promise<void> => {
-    const { id } = req.params;
-
     try {
-      // Parse the ID as an integer (assuming your database uses numeric IDs)
-      const libraryId = parseInt(id, 10);
-      if (isNaN(libraryId)) {
-        res.status(400).json({ message: "Invalid library ID" });
-        return;
-      }
+      const libraryId = parseInt(req.params.libraryId, 10);
 
-      // Fetch the library by ID and include related books
-      const foundLibrary = await prisma.library.findUnique({
-        where: {
-          id: libraryId,
-        },
+      const library = await prisma.library.findUnique({
+        where: { id: libraryId },
         include: {
-          books: true, // Include related books
+          books: true, // Include books if you want them to show up
         },
       });
 
-      // Handle case where the library is not found
-      if (!foundLibrary) {
+      if (!library) {
         res.status(404).json({ message: "Library not found" });
         return;
       }
 
-      res.status(200).json(foundLibrary);
+      res.status(200).json(library);
     } catch (error: unknown) {
-      console.error("Error when fetching the library:", error);
-
-      if (error instanceof Error) {
-        res.status(400).json({
-          message: "Error when fetching the library",
-          error: error.message,
-        });
-      } else {
-        res.status(400).json({
-          message: "Unknown error occurred",
-        });
-      }
+      res.status(400).json({ message: "Error fetching library details" });
     }
   }
 );

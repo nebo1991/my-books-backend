@@ -19,6 +19,15 @@ model User {
   name      String
   library   Library? @relation // Optional relation to Library
   books     Book[]   @relation("UserBooks") // One-to-many relation with Book model
+  notes Note[] @relation("UserNotes")
+}
+
+model Note {
+  id          Int        @id @default(autoincrement()) // Primary key with auto-increment
+  title       String
+  description String?    // Optional field for description
+  createdById Int        // Foreign key to User model
+  createdBy   User       @relation("UserNotes", fields: [createdById], references: [id]) // Relation to User model
 }
 
 model Book {
