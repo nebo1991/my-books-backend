@@ -25,7 +25,8 @@
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "pg": "^8.13.1",
-    "prisma": "^5.22.0"
+    "prisma": "^5.22.0",
+    "tsconfig-paths": "^4.2.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
