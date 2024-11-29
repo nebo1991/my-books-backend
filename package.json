@@ -2,13 +2,13 @@
   "name": "my-books-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "set NODE_ENV=development&&jest --detectOpenHandles --coverage",
     "lint": "eslint",
     "format": "eslint --fix",
-    "build": "npm ci --omit=dev && yarn tsc",
-    "start": "set NODE_ENV=production&&node -r ts-node/register/transpile-only -r tsconfig-paths/register dist/src/index.js",
+    "build": "npx tsc",
+    "start": "set NODE_ENV=production&&node -r ts-node/register/transpile-only -r tsconfig-paths/register dist/app.js",
     "dev": "set NODE_ENV=development&&nodemon src/app.ts"
   },
   "keywords": [],

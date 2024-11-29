@@ -1,4 +1,0 @@
-[phases]
-install = "npm ci --omit=dev"
-build = "npm run build"
-start = "npm run start"
