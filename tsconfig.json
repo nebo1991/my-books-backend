@@ -120,6 +120,6 @@
     "outDir": "./dist", // Compiled files will go to the 'dist' folder
     "rootDir": "./" // The root directory for source files is now the project root
   },
-  "include": ["app.ts"], // Only include the index.ts file in the root
+  "include": ["/**/*.ts"], // Only include the index.ts file in the root
   "exclude": ["node_modules"] // Exclude node_modules folder
 }
